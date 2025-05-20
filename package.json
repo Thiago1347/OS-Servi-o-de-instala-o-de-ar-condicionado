@@ -1,5 +1,29 @@
 {
+  "name": "os-servico-de-instalacao-de-ar-condicionado",
+  "version": "1.0.0",
+  "description": "Sistema de servico de instalacao de ar-condionado",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Thiago N",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "devDependencies": {
+    "electron": "^35.2.0"
+  },
   "dependencies": {
-    "electron": "^36.2.0"
+    "i": "^0.3.7",
+    "jspdf": "^3.0.1",
+    "mongodb": "^6.15.0",
+    "mongoose": "^8.15.0"
   }
 }
