@@ -1,71 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Ordem de Serviço - Instalação de Ar Condicionado</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h1 { text-align: center; }
-    label { display: block; margin-top: 10px; }
-    input, textarea { width: 100%; padding: 8px; margin-top: 5px; }
-    button { margin-top: 15px; padding: 10px 15px; }
-    #output { margin-top: 20px; border: 1px solid #ccc; padding: 15px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título que será exibido na janela -->
+    <title>Cadastro de clientes</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <!-- impedir a execução de scripts externos ou não autorizados -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
 </head>
+
 <body>
+  <div class="container">
+    <img src="../public/img/clientes.png" alt="clientes" title="Cadastro de clientes" class="cliente" onclick="client()">       
+    <img src="../public/img/logotipo.png.png" alt="Polar Service" title="Polar Service" class="servico"  onclick="OrdemdeServico()">       
+</div>
 
-  <h1>Ordem de Serviço</h1>
+    <footer>
+        <p id="dataAtual"></p>
+        <img src="../public/img/dboff.png" alt="dbicon" id="statusdb">
+    </footer>
 
-  <form id="osForm">
-    <label>Cliente:
-      <input type="text" id="cliente" required>
-    </label>
-    <label>Endereço:
-      <input type="text" id="endereco" required>
-    </label>
-    <label>Telefone:
-      <input type="text" id="telefone" required>
-    </label>
-    <label>Serviço Solicitado:
-      <textarea id="servico" required></textarea>
-    </label>
-    <label>Técnico Responsável:
-      <input type="text" id="tecnico" required>
-    </label>
-    <label>Data:
-      <input type="date" id="data" required>
-    </label>
-    <button type="submit">Gerar OS</button>
-  </form>
-
-  <div id="output"></div>
-
-  <script>
-    document.getElementById('osForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const cliente = document.getElementById('cliente').value;
-      const endereco = document.getElementById('endereco').value;
-      const telefone = document.getElementById('telefone').value;
-      const servico = document.getElementById('servico').value;
-      const tecnico = document.getElementById('tecnico').value;
-      const data = document.getElementById('data').value;
-
-      const resultado = `
-        <h2>Ordem de Serviço</h2>
-        <p><strong>Cliente:</strong> ${cliente}</p>
-        <p><strong>Endereço:</strong> ${endereco}</p>
-        <p><strong>Telefone:</strong> ${telefone}</p>
-        <p><strong>Serviço:</strong><br>${servico}</p>
-        <p><strong>Técnico:</strong> ${tecnico}</p>
-        <p><strong>Data:</strong> ${data}</p>
-        <p><strong>Assinatura do Cliente: ____________________________</strong></p>
-      `;
-
-      document.getElementById('output').innerHTML = resultado;
-      window.print(); // abre a janela de impressão
-    });
-  </script>
-
+    <!-- Bootstrap -->
+    <script src="../public/js/bootstrap.min.js"></script>
+    <!-- Scripts -->
+    <script src="../public/js/script.js"></script>
+    <!-- Renderizador -->
+    <script src="renderer.js"></script>
 </body>
+
 </html>

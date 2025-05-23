@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ordem de Serviço - Instalação de Ar Condicionado</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { text-align: center; }
+    label { display: block; margin-top: 10px; }
+    input, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px 15px; }
+    #output { margin-top: 20px; border: 1px solid #ccc; padding: 15px; }
+    @media print {
+      button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ordem de Serviço</h1>
+
+  <form id="osForm">
+    <label>Cliente:
+      <input type="text" id="cliente" required>
+    </label>
+    <label>Endereço:
+      <input type="text" id="endereco" required>
+    </label>
+    <label>Telefone:
+      <input type="text" id="telefone" required>
+    </label>
+    <label>Serviço Solicitado:
+      <textarea id="servico" required></textarea>
+    </label>
+    <label><strong>Pedido:</strong>
+      <textarea id="pedido" required></textarea>
+    </label>
+    <label>Técnico Responsável:
+      <input type="text" id="tecnico" required>
+    </label>
+    <label>Data:
+      <input type="date" id="data" required>
+    </label>
+    <button type="submit">Gerar OS</button>
+  </form>
+
+  <div id="output"></div>
+
+  <script>
+    document.getElementById('osForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const cliente = document.getElementById('cliente').value;
+      const endereco = document.getElementById('endereco').value;
+      const telefone = document.getElementById('telefone').value;
+      const servico = document.getElementById('servico').value;
+      const pedido = document.getElementById('pedido').value;
+      const tecnico = document.getElementById('tecnico').value;
+      const data = document.getElementById('data').value;
+
+      const resultado = `
+        <h2>Ordem de Serviço</h2>
+        <p><strong>Cliente:</strong> ${cliente}</p>
+        <p><strong>Endereço:</strong> ${endereco}</p>
+        <p><strong>Telefone:</strong> ${telefone}</p>
+        <p><strong>Serviço:</strong><br>${servico}</p>
+        <p><strong>Pedido:</strong><br>${pedido}</p>
+        <p><strong>Técnico:</strong> ${tecnico}</p>
+        <p><strong>Data:</strong> ${data}</p>
+        <p><strong>Assinatura do Cliente:</strong> ____________________________</p>
+      `;
+
+      document.getElementById('output').innerHTML = resultado;
+      window.print();
+    });
+  </script>
+
+<script src="renderer.js"></script>
+
+</body>
+</html>
