@@ -15,7 +15,7 @@ function client() {
 function servico() {
     //console.log("teste do botão cliente")
     //uso da api(autorizada no preload.js)
-    api.servicoWindow()
+    api.polarWindow()
 }
 // Troca do ícone do banco de dados (usando a api do preload.js)
 api.dbStatus((event, message) => {

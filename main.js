@@ -87,12 +87,12 @@ function clientWindow() {
     client.center() //iniciar no centro da tela   
 }
 
-let servico
-function servicoWindow() {
+let polar
+function polarWindow() {
     nativeTheme.themeSource = 'light'
     const main = BrowserWindow.getFocusedWindow()
     if (main) {
-        servico = new BrowserWindow({
+        polar = new BrowserWindow({
             width: 1010,
             height: 680,
             //autoHideMenuBar: true,
@@ -105,8 +105,8 @@ function servicoWindow() {
             }
         })
     }
-    client.loadFile('./src/views/Polar_Service.html')
-    client.center() //iniciar no centro da tela   
+    polar.loadFile('./src/views/Polar_Service.html')
+    polar.center() //iniciar no centro da tela   
 }
 // Iniciar a aplicação
 app.whenReady().then(() => {
@@ -217,8 +217,8 @@ ipcMain.on('client-window', () => {
     clientWindow()
 })
 
-ipcMain.on('servico-window', () => {
-    servicoWindow()
+ipcMain.on('polar-window', () => {
+    polarWindow()
 })
 // ============================================================
 // == Clientes - CRUD Create
