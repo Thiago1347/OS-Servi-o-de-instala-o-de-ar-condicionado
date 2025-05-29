@@ -23,7 +23,7 @@
     form {
       display: flex;
       gap: 15px;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
     }
     .col {
       flex: 1;
@@ -40,7 +40,8 @@
     input[type="text"],
     input[type="date"],
     input[type="tel"],
-    textarea {
+    textarea,
+    select.form-select {
       width: 100%;
       padding: 5px 7px;
       margin-bottom: 8px;
@@ -53,16 +54,6 @@
     }
     textarea {
       min-height: 60px;
-    }
-    .checkbox-group {
-      margin-top: 8px;
-      margin-bottom: 10px;
-    }
-    .checkbox-group label {
-      font-weight: normal;
-      margin-right: 10px;
-      font-size: 0.85rem;
-      user-select: text;
     }
     table {
       width: 100%;
@@ -84,9 +75,12 @@
       display: flex;
       gap: 10px;
       margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
     }
     button {
       flex: 1;
+      min-width: 120px;
       padding: 8px;
       font-size: 0.95rem;
       background-color: #007bff;
@@ -113,6 +107,9 @@
     button.edit:hover {
       background-color: #d39e00;
     }
+    button.clear {
+      background-color: #6c757d;
+    }
     #output {
       background: #f9f9f9;
       padding: 12px;
@@ -126,12 +123,36 @@
       overflow-y: auto;
       user-select: text;
     }
+    @media (max-width: 768px) {
+      form {
+        flex-direction: column;
+      }
+      .col {
+        width: 100%;
+        min-width: unset;
+      }
+      table {
+        font-size: 0.75rem;
+      }
+      th, td {
+        padding: 3px 4px;
+      }
+      .button-group {
+        flex-direction: column;
+        gap: 8px;
+      }
+      button {
+        flex: unset;
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <form id="manutForm" autocomplete="off">
-      <!-- Coluna esquerda -->
       <div class="col">
         <label for="marca">Marca:</label>
         <input type="text" id="marca" required>
@@ -148,24 +169,31 @@
         <label for="tipoEquip">Tipo:</label>
         <input type="text" id="tipoEquip" placeholder="Ex: Split, Janela, Cassete" required>
 
-        <label>Tipo de Manutenção:</label>
-        <div class="checkbox-group">
-          <label><input type="checkbox" name="tipoManut" value="Preventiva"> Preventiva</label>
-          <label><input type="checkbox" name="tipoManut" value="Corretiva"> Corretiva</label>
-          <label><input type="checkbox" name="tipoManut" value="Instalação"> Instalação</label>
-          <label><input type="checkbox" name="tipoManut" value="Desinstalação"> Desinstalação</label>
-          <label><input type="checkbox" name="tipoManut" value="Limpeza Geral"> Limpeza Geral</label>
-          <label><input type="checkbox" name="tipoManut" value="Verificação Técnica"> Verificação Técnica</label>
-        </div>
+        <label for="inputUn">Tipo de Manutenção:</label>
+        <select id="inputUn" class="form-select" required>
+          <option value="" disabled selected>Selecione o tipo de manutenção</option>
+          <option value="Preventiva">Preventiva</option>
+          <option value="Corretiva">Corretiva</option>
+          <option value="Instalação">Instalação</option>
+          <option value="Desinstalação">Desinstalação</option>
+          <option value="Limpeza Geral">Limpeza Geral</option>
+          <option value="Verificação Técnica">Verificação Técnica</option>
+        </select>
 
         <label>Descrição dos Serviços Realizados:</label>
         <textarea id="descricao" rows="3" placeholder="Descreva os serviços..."></textarea>
 
         <label>Recomendações Técnicas:</label>
         <textarea id="recomendacoes" rows="3" placeholder="Escreva as recomendações..."></textarea>
+
+        <div class="button-group">
+          <button type="submit">Gerar Ficha</button>
+          <button type="button" class="edit" id="btnEditar">Editar Ficha</button>
+          <button type="button" class="delete" id="btnExcluir">Excluir Ficha</button>
+          <button type="button" class="clear" id="btnLimpar">Limpar Tela</button>
+        </div>
       </div>
 
-      <!-- Coluna direita -->
       <div class="col">
         <label for="nomeTecnico">Nome do Técnico:</label>
         <input type="text" id="nomeTecnico" required>
@@ -219,115 +247,12 @@
 
         <label for="dataCliente">Data (Assinatura Cliente):</label>
         <input type="date" id="dataCliente" required>
-
-        <div class="button-group">
-          <button type="submit">Gerar Ficha</button>
-          <button type="button" class="edit" onclick="editarFicha()">Editar Ficha</button>
-          <button type="button" class="delete" onclick="excluirFicha()">Excluir Ficha</button>
-        </div>
       </div>
     </form>
 
-    <pre id="output"></pre>
+    <div id="output"></div>
   </div>
 
-  <script>
-    document.getElementById('manutForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const marca = document.getElementById('marca').value.trim();
-      const modelo = document.getElementById('modelo').value.trim();
-      const capacidade = document.getElementById('capacidade').value.trim();
-      const numeroSerie = document.getElementById('numeroSerie').value.trim();
-      const tipoEquip = document.getElementById('tipoEquip').value.trim();
-
-      const manutCheckboxes = document.querySelectorAll('input[name="tipoManut"]:checked');
-      const manutSelecionadas = Array.from(manutCheckboxes).map(c => c.value).join(', ') || 'Nenhuma';
-
-      const descricao = document.getElementById('descricao').value.trim();
-      const recomendacoes = document.getElementById('recomendacoes').value.trim();
-
-      const estadoGeralOk = document.querySelector('input[name="estadoGeralOk"]').checked;
-      const estadoGeralNaoOk = document.querySelector('input[name="estadoGeralNaoOk"]').checked;
-      const obsEstadoGeral = document.querySelector('input[name="obsEstadoGeral"]').value.trim();
-
-      const filtroOk = document.querySelector('input[name="filtroOk"]').checked;
-      const filtroNaoOk = document.querySelector('input[name="filtroNaoOk"]').checked;
-      const obsFiltro = document.querySelector('input[name="obsFiltro"]').value.trim();
-
-      const vazamentosOk = document.querySelector('input[name="vazamentosOk"]').checked;
-      const vazamentosNaoOk = document.querySelector('input[name="vazamentosNaoOk"]').checked;
-      const obsVazamentos = document.querySelector('input[name="obsVazamentos"]').value.trim();
-
-      const nomeTecnico = document.getElementById('nomeTecnico').value.trim();
-      const empresa = document.getElementById('empresa').value.trim();
-      const cnpj = document.getElementById('cnpj').value.trim();
-      const data = document.getElementById('data').value;
-      const assinaturaTecnico = document.getElementById('assinaturaTecnico').value.trim();
-
-      const assinaturaCliente = document.getElementById('assinaturaCliente').value.trim();
-      const dataCliente = document.getElementById('dataCliente').value;
-
-      const formatDate = (d) => {
-        if (!d) return '';
-        const dt = new Date(d);
-        return dt.toLocaleDateString('pt-BR');
-      };
-
-      function formatChecklist(item, ok, naoOk, obs) {
-        let status = '';
-        if(ok) status = 'OK';
-        else if(naoOk) status = 'Não OK';
-        else status = 'Não verificado';
-        return `${item}: ${status}${obs ? ' (' + obs + ')' : ''}`;
-      }
-
-      const outputText = `
-Ficha de Manutenção - Ar Condicionado
-
-Marca: ${marca}
-Modelo: ${modelo}
-Capacidade (BTUs): ${capacidade}
-Número de Série: ${numeroSerie}
-Tipo: ${tipoEquip}
-
-Tipo(s) de Manutenção: ${manutSelecionadas}
-
-Checklist de Manutenção:
-- ${formatChecklist('Estado geral do equipamento', estadoGeralOk, estadoGeralNaoOk, obsEstadoGeral)}
-- ${formatChecklist('Limpeza do filtro de ar', filtroOk, filtroNaoOk, obsFiltro)}
-- ${formatChecklist('Verificação de vazamentos', vazamentosOk, vazamentosNaoOk, obsVazamentos)}
-
-Descrição dos Serviços Realizados:
-${descricao || '-'}
-
-Recomendações Técnicas:
-${recomendacoes || '-'}
-
-Técnico Responsável:
-Nome: ${nomeTecnico}
-Empresa: ${empresa || '-'}
-CNPJ: ${cnpj || '-'}
-Data: ${formatDate(data)}
-Assinatura: ${assinaturaTecnico}
-
-Assinatura do Cliente: ${assinaturaCliente}
-Data: ${formatDate(dataCliente)}
-      `.trim();
-
-      document.getElementById('output').textContent = outputText;
-    });
-
-    function editarFicha() {
-      alert("Modo de edição ativado. Altere os campos desejados e clique em 'Gerar Ficha' novamente.");
-    }
-
-    function excluirFicha() {
-      if (confirm("Tem certeza que deseja excluir a ficha atual?")) {
-        document.getElementById('manutForm').reset();
-        document.getElementById('output').textContent = '';
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

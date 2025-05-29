@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Clientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Relatório de Clientes</h1>
+        <p>Clique no botão abaixo para gerar o relatório em PDF com os dados dos clientes cadastrados.</p>
+        <button id="gerarRelatorio">Gerar Relatório</button>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron')
+
+        document.getElementById('gerarRelatorio').addEventListener('click', () => {
+            ipcRenderer.send('gerar-relatorio-clientes')
+        })
+    </script>
+</body>
+</html>

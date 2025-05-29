@@ -169,10 +169,11 @@ const template = [
         submenu: [
             {
                 label: 'Clientes',
-                click: () => relatorioClientes()
+                click: () => reportClientsWindow()
             }
         ]
     },
+    
     {
         label: 'Ferramentas',
         submenu: [
@@ -514,3 +515,28 @@ ipcMain.on('update-client', async (event, client) => {
 
 // == Fim - Crud update =======================================
 // ============================================================
+// Janela de Relatório de Clientes
+let reportClients
+function reportClientsWindow() {
+    nativeTheme.themeSource = 'light'
+    const main = BrowserWindow.getFocusedWindow()
+    if (main) {
+        reportClients = new BrowserWindow({
+            width: 600,
+            height: 400,
+            autoHideMenuBar: true,
+            resizable: false,
+            parent: main,
+            modal: true,
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js')
+            }
+        })
+    }
+    reportClients.loadFile('./src/views/relatorioClientes.html')
+    reportClients.center()
+}
+
+ipcMain.on('gerar-relatorio-clientes', async () => {
+    await relatorioClientes()
+})
