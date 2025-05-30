@@ -1,60 +1,39 @@
-/**
- * Módulo de conexão com o banco de dados
- * Uso do framework mongoose
- */
+const { MongoClient } = require('mongodb')
 
-// importação do mongoose
-const mongoose = require('mongoose')
+// URL de conexão (ajuste para sua instância local ou Atlas)
+const url = 'mongodb+srv://admin:123Senac@cluster2.w2es8.mongodb.net/dbpolar'
+const dbName = 'sistema_clientes'
 
-// configuração do acesso ao banco de dados
-// ip/link - autenticação
-// Obs: Atlas(obter via compass)
-// Para criar um banco de dados personalizado basta escolher um nome no final da String da url (ex: dbclientes)
-const url = ''
+let client = null
+let db = null
 
-// criar uma variável de apoio para validação
-let conectado = false
+async function conectar() {
+    if (db) return db
 
-// método para conectar o banco de dados
-// async executar a função de forma assíncrona
-const conectar = async () => {
-    // validação (se não estiver conectado, conectar)
-    if (!conectado) {
-        // conectar com o banco de dados
-        // try catch - tratamento de exceções
+    client = new MongoClient(url, { useUnifiedTopology: true })
+
+    try {
+        await client.connect()
+        db = client.db(dbName)
+        console.log('🟢 Conectado ao MongoDB')
+        return db
+    } catch (error) {
+        console.error('❌ Erro ao conectar no MongoDB:', error)
+        throw error
+    }
+}
+
+async function desconectar() {
+    if (client) {
         try {
-            await mongoose.connect(url) //conectar
-            conectado = true //setar a variável
-            console.log("MongoDB conectado")
-            return true //para o main identificar a conexão estabelecida com sucesso
+            await client.close()
+            client = null
+            db = null
+            console.log('🔴 Desconectado do MongoDB')
         } catch (error) {
-            // se o código de erro = 8000 (autenticação)
-            if (error.code = 8000) {
-                console.log("Erro de autenticacao")
-            } else {
-                console.log(error)
-            }
-            return false
+            console.error('❌ Erro ao desconectar do MongoDB:', error)
         }
     }
 }
 
-// método para desconectar o banco de dados
-const desconectar = async () => {
-    // validação (se estiver conectado, desconectar)
-    if (conectado) {
-        // desconectar do banco de dados        
-        try {
-            await mongoose.disconnect(url) //desconectar
-            conectado = false //setar a variável
-            console.log("MongoDB desconectado")
-            return true //para o main identificar que o banco de dados foi desconectado com sucesso
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    }
-}
-
-// exportar para o main os métodos conectar e desconectar
 module.exports = { conectar, desconectar }
